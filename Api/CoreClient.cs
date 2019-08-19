@@ -8,7 +8,10 @@ namespace LightestNight.System.Api
     {
         public CoreClient(string baseUrl) : base(baseUrl) {}
 
-        protected override string ApiRoute { get; }
+        protected override string ApiRoute => Edge; 
+        
+        /// <inheritdoc cref="ApiClient.ApiRoute" />
+        public string Edge { get; set; }
         
         protected override Task<TokenData> GetMachineToken(CancellationToken cancellationToken = default)
         {
