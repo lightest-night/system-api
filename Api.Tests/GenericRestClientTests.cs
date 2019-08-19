@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Net.Http.Headers;
@@ -19,7 +20,7 @@ namespace LightestNight.System.Api.Tests
             public const string MachineToken = "MACHINE_TOKEN";
             public const string Route = "/route";
             
-            public TestClient(IRestClient restClient) : base(restClient)
+            public TestClient(string baseUrl) : base(baseUrl)
             {
             }
 
@@ -44,7 +45,9 @@ namespace LightestNight.System.Api.Tests
 
         public GenericRestClientTests()
         {
-            _sut = new TestClient(_restClientMock.Object);
+            _sut = new TestClient("http://example.com");
+            var restClientField = typeof(TestClient).BaseType.GetField("_restClient", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic);
+            restClientField.SetValue(_sut, _restClientMock.Object);
         }
 
         [Fact]

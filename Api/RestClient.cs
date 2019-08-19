@@ -42,22 +42,16 @@ namespace LightestNight.System.Api
         /// </summary>
         protected abstract string ApiRoute { get; }
 
-        /// <summary>
-        /// Sets or Gets the current BaseUrl value
-        /// </summary>
-        protected Uri BaseUrl
+        protected ApiClient(string baseUrl)
         {
-            get => _restClient.BaseUrl;
-            set => _restClient.BaseUrl = value;
-        }
-
-        protected ApiClient(IRestClient restClient)
-        {
-            _restClient = restClient;
+            _restClient = new RestClient();
             _restClient.UseSerializer(new Serializer());
-            
-            if (_restClient is RestClient client)
-                client.UseJson();
+            ((RestClient)_restClient).UseJson();
+
+            if (string.IsNullOrEmpty(baseUrl) || !Uri.TryCreate(baseUrl, UriKind.Absolute, out var uri))
+                throw new UriFormatException(baseUrl);
+
+            _restClient.BaseUrl = uri;
         }
 
         /// <summary>
