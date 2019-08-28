@@ -6,6 +6,8 @@ namespace LightestNight.System.Api
 {
     public class CoreClient : ApiClient
     {
+        public CoreClient() {}
+        
         public CoreClient(string baseUrl) : base(baseUrl) { }
 
         public override Task<TokenData> GetMachineToken(CancellationToken cancellationToken = default)
