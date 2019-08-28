@@ -13,41 +13,37 @@ using Xunit;
 
 namespace LightestNight.System.Api.Tests
 {
-    public class GenericRestClientTests
+    public class GenericApiClientTests
     {
         private class TestClient : ApiClient
         {
             public const string MachineToken = "MACHINE_TOKEN";
-            public const string Route = "/route";
             
             public TestClient(string baseUrl) : base(baseUrl)
             {
             }
 
-            protected override Task<TokenData> GetMachineToken(CancellationToken cancellationToken = default)
+            public override Task<TokenData> GetMachineToken(CancellationToken cancellationToken = default)
             {
                 return Task.FromResult(new TokenData
                 {
                     AccessToken = MachineToken
                 });
             }
-
-            protected override string ApiRoute => Route;
         }
 
-        private class TestObject
-        {
-            public string Foo { get; set; } = "Bar";
-        }
+        private class TestObject { }
         
         private readonly Mock<IRestClient> _restClientMock = new Mock<IRestClient>();
         private readonly TestClient _sut;
 
-        public GenericRestClientTests()
+        public GenericApiClientTests()
         {
             _sut = new TestClient("http://example.com");
-            var restClientField = typeof(TestClient).BaseType.GetField("_restClient", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic);
-            restClientField.SetValue(_sut, _restClientMock.Object);
+            var restClientField = typeof(TestClient).BaseType?.GetField("_restClient", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic);
+            
+            if (restClientField != null)
+                restClientField.SetValue(_sut, _restClientMock.Object);
         }
 
         [Fact]
@@ -60,15 +56,17 @@ namespace LightestNight.System.Api.Tests
                 ResponseStatus = ResponseStatus.Completed
             });
             
-            var token = $"Bearer {Guid.NewGuid()}";
-            var request = new RestRequest();
-            request.AddHeader(HeaderNames.Authorization, token);
+            var token = $"{Guid.NewGuid()}";
+            var request = new ApiRequest("/resource")
+            {
+                Authorization = new Authorization(AuthorizationType.Bearer, token)
+            };
             
             // Act
-            await _sut.MakeRequest<TestObject>(request, true, false, CancellationToken.None);
+            await _sut.MakeApiRequest<TestObject>(request, CancellationToken.None);
             
             // Assert
-            _restClientMock.Verify(client => client.ExecuteTaskAsync<TestObject>(It.Is<IRestRequest>(req => req.Parameters.FirstOrDefault(param => param.Name == HeaderNames.Authorization && param.Type == ParameterType.HttpHeader && param.Value.ToString() == token) != default), It.IsAny<CancellationToken>()), Times.Once);
+            _restClientMock.Verify(client => client.ExecuteTaskAsync<TestObject>(It.Is<IRestRequest>(req => req.Parameters.FirstOrDefault(param => param.Name == HeaderNames.Authorization && param.Type == ParameterType.HttpHeader && param.Value.ToString() == $"Bearer {token}") != default), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
@@ -80,9 +78,11 @@ namespace LightestNight.System.Api.Tests
                 StatusCode = HttpStatusCode.OK,
                 ResponseStatus = ResponseStatus.Completed
             });
+
+            var request = new ApiRequest("resource");
             
             // Act
-            await _sut.MakeRequest<TestObject>(new RestRequest(), isApiRequest: false, cancellationToken: CancellationToken.None);
+            await _sut.MakeApiRequest<TestObject>(request, CancellationToken.None);
             
             // Assert
             _restClientMock.Verify(client => client.ExecuteTaskAsync<TestObject>(It.Is<IRestRequest>(req => req.Parameters.FirstOrDefault(param => param.Name == HeaderNames.Authorization && param.Type == ParameterType.HttpHeader && param.Value.ToString() == $"Bearer {TestClient.MachineToken}") != default), It.IsAny<CancellationToken>()), Times.Once);
@@ -103,9 +103,11 @@ namespace LightestNight.System.Api.Tests
                     StatusCode = HttpStatusCode.OK,
                     ResponseStatus = ResponseStatus.Completed
                 });
+
+            var request = new ApiRequest("resource");
             
             // Act
-            await _sut.MakeRequest<TestObject>(new RestRequest(), isApiRequest: false, cancellationToken: CancellationToken.None);
+            await _sut.MakeApiRequest<TestObject>(request, CancellationToken.None);
             
             // Assert
             _restClientMock.Verify(client => client.ExecuteTaskAsync<TestObject>(It.Is<IRestRequest>(req => req.Parameters.FirstOrDefault(param => param.Name == HeaderNames.Authorization && param.Type == ParameterType.HttpHeader && param.Value.ToString() == $"Bearer {TestClient.MachineToken}") != default), It.IsAny<CancellationToken>()), Times.Exactly(2));
@@ -121,12 +123,14 @@ namespace LightestNight.System.Api.Tests
                 ResponseStatus = ResponseStatus.Error
             });
             
-            var token = $"Bearer {Guid.NewGuid()}";
-            var request = new RestRequest();
-            request.AddHeader(HeaderNames.Authorization, token);
+            var token = $"{Guid.NewGuid()}";
+            var request = new ApiRequest("resource")
+            {
+                Authorization = new Authorization(AuthorizationType.Bearer, token)
+            };
             
             // Act & Assert
-            await Should.ThrowAsync<UnauthorizedException>(() => _sut.MakeRequest<TestObject>(request, true, false, CancellationToken.None));
+            await Should.ThrowAsync<UnauthorizedException>(() => _sut.MakeApiRequest<TestObject>(request, CancellationToken.None));
         }
 
         [Fact]
@@ -140,12 +144,14 @@ namespace LightestNight.System.Api.Tests
                 Content = JsonConvert.SerializeObject(new { Foo = "Bar" })
             });
             
-            var token = $"Bearer {Guid.NewGuid()}";
-            var request = new RestRequest("/resource");
-            request.AddHeader(HeaderNames.Authorization, token);
+            var token = $"{Guid.NewGuid()}";
+            var request = new ApiRequest("resource")
+            {
+                Authorization = new Authorization(AuthorizationType.Bearer, token)
+            };
             
             // Act
-            var exception = await Should.ThrowAsync<RestException>(() => _sut.MakeRequest<TestObject>(request, true, false, CancellationToken.None));
+            var exception = await Should.ThrowAsync<RestException>(() => _sut.MakeApiRequest<TestObject>(request, CancellationToken.None));
             
             // Assert
             exception.Message.ShouldContain(request.Resource);
@@ -162,23 +168,25 @@ namespace LightestNight.System.Api.Tests
                 ResponseStatus = ResponseStatus.Completed
             });
             
-            var token = $"Bearer {Guid.NewGuid()}";
-            var request = new RestRequest();
-            request.AddHeader(HeaderNames.Authorization, token);
-            request.Resource = "/resource";
+            var token = $"{Guid.NewGuid()}";
+            var request = new ApiRequest("resource")
+            {
+                Authorization = new Authorization(AuthorizationType.Bearer, token),
+                Edge = "/edge"
+            };
 
             // Act
-            await _sut.MakeRequest<TestObject>(request, true, cancellationToken: CancellationToken.None);
+            await _sut.MakeApiRequest<TestObject>(request, CancellationToken.None);
             
             // Assert
-            _restClientMock.Verify(client => client.ExecuteTaskAsync<TestObject>(It.Is<IRestRequest>(req => req.Resource.Contains(request.Resource) && req.Resource.Contains(TestClient.Route)), It.IsAny<CancellationToken>()), Times.Once);
+            _restClientMock.Verify(client => client.ExecuteTaskAsync<TestObject>(It.Is<IRestRequest>(req => req.Resource.Contains(request.Resource) && req.Resource.Contains(request.Edge)), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
         public async Task Should_Throw_If_ApiRequest_Is_Requested_With_No_Resource()
         {
             // Act
-            var exception = await Should.ThrowAsync<ArgumentNullException>(() => _sut.MakeRequest<TestObject>(new RestRequest()));
+            var exception = await Should.ThrowAsync<ArgumentNullException>(() => _sut.MakeApiRequest<TestObject>(new ApiRequest(string.Empty)));
             
             // Assert
             exception.ParamName.ShouldBe(nameof(RestRequest.Resource));
