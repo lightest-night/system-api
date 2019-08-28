@@ -9,34 +9,6 @@ using RestSharp;
 
 namespace LightestNight.System.Api
 {
-    public interface IApiClient
-    {
-        /// <summary>
-        /// The function to use to get a machine token
-        /// </summary>
-        /// <param name="cancellationToken">Any <see cref="CancellationToken" /> to use during the request</param>
-        /// <returns>A populated <see cref="TokenData" /> object containing the machine token metadata</returns>
-        Task<TokenData> GetMachineToken(CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Makes an API request
-        /// </summary>
-        /// <param name="request">The <see cref="ApiRequest" /> containing the metadata of this request</param>
-        /// <param name="cancellationToken">Any <see cref="CancellationToken" /> to use during the request</param>
-        /// <returns></returns>
-        Task<ApiResponse> MakeApiRequest(ApiRequest request, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Makes an API request
-        /// </summary>
-        /// <param name="request">The <see cref="ApiRequest" /> containing the metadata of this request</param>
-        /// <param name="cancellationToken">Any <see cref="CancellationToken" /> to use during the request</param>
-        /// <typeparam name="T">The type of the object to return</typeparam>
-        /// <returns></returns>
-        Task<ApiResponse<T>> MakeApiRequest<T>(ApiRequest request, CancellationToken cancellationToken = default)
-            where T : class;
-    }
-
     public abstract class ApiClient : IApiClient
     {
         private TokenData _machineToken;
@@ -60,16 +32,28 @@ namespace LightestNight.System.Api
         /// <inheritdoc cref="IApiClient.GetMachineToken" />
         public abstract Task<TokenData> GetMachineToken(CancellationToken cancellationToken = default);
 
-        protected ApiClient(string baseUrl)
+        protected ApiClient()
         {
             _restClient = new RestClient();
             _restClient.UseSerializer(new Serializer());
-            ((RestClient) _restClient).UseJson();
+        }
+        
+        protected ApiClient(string baseUrl) : this()
+        {
+//            _restClient = new RestClient();
+//            _restClient.UseSerializer(new Serializer());
+//            ((RestClient) _restClient).UseJson();
 
             if (string.IsNullOrEmpty(baseUrl) || !Uri.TryCreate(baseUrl, UriKind.Absolute, out var uri))
                 throw new UriFormatException(baseUrl);
 
-            _restClient.BaseUrl = uri;
+            SetBaseUri(uri);
+        }
+
+        /// <inheritdoc cref="IApiClient.SetBaseUri" />
+        public void SetBaseUri(Uri baseUri)
+        {
+            _restClient.BaseUrl = baseUri;
         }
 
         /// <inheritdoc cref="IApiClient.MakeApiRequest" />
