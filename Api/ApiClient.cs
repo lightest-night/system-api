@@ -79,7 +79,7 @@ namespace LightestNight.System.Api
                     throw new UnauthorizedException();
                 
                 default:
-                    throw new RestException(_restClient.BuildUri(restRequest).ToString(), restResponse.Content);
+                    throw new RestException(_restClient.BuildUri(restRequest).ToString(), restResponse.StatusCode, restResponse.Content, request.Body);
             }
         }
 
@@ -105,10 +105,14 @@ namespace LightestNight.System.Api
             if (restResponse.IsSuccessful)
                 return ApiResponse<T>.FromRestResponse(restResponse);
 
-            if (restResponse.StatusCode == HttpStatusCode.Unauthorized)
-                throw new UnauthorizedException();
-
-            throw new RestException(_restClient.BuildUri(restRequest).ToString(), restResponse.StatusCode, restResponse.Content, request.Body);
+            switch (restResponse.StatusCode)
+            {
+                case HttpStatusCode.Unauthorized:
+                    throw new UnauthorizedException();
+                
+                default:
+                    throw new RestException(_restClient.BuildUri(restRequest).ToString(), restResponse.StatusCode, restResponse.Content, request.Body);
+            }
         }
 
         private IRestRequest PrepareRequest(ApiRequest request)
