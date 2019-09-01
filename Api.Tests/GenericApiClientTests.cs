@@ -36,8 +36,6 @@ namespace LightestNight.System.Api.Tests
             }
         }
 
-        private class TestObject { }
-        
         private readonly Mock<IRestClient> _restClientMock = new Mock<IRestClient>();
         private readonly TestClient _sut;
 

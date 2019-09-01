@@ -433,5 +433,93 @@ namespace LightestNight.System.Api.Tests
             // Assert
             _restClientMock.Verify(client => client.ExecuteTaskAsync(It.Is<IRestRequest>(req => req.Method == Method.PUT), It.IsAny<CancellationToken>()), Times.Once);
         }
+
+        [Fact]
+            public async Task Should_Make_Request_Using_GET_Verb_Ignoring_Given_Verb_Accessing_Generic_Client()
+            {
+                // Arrange
+                _restClientMock.Setup(client => client.ExecuteTaskAsync<TestObject>(It.IsAny<IRestRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(new RestResponse<TestObject>
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    ResponseStatus = ResponseStatus.Completed
+                });
+
+                var request = new ApiRequest("resource")
+                {
+                    HttpMethod = HttpMethods.Post
+                };
+                
+                // Act
+                await _sut.Get<TestObject>(request, CancellationToken.None);
+                
+                // Assert
+                _restClientMock.Verify(client => client.ExecuteTaskAsync<TestObject>(It.Is<IRestRequest>(req => req.Method == Method.GET), It.IsAny<CancellationToken>()), Times.Once);
+            }
+            
+            [Fact]
+            public async Task Should_Make_Request_Using_PATCH_Verb_Ignoring_Given_Verb_Accessing_Generic_Client()
+            {
+                // Arrange
+                _restClientMock.Setup(client => client.ExecuteTaskAsync<TestObject>(It.IsAny<IRestRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(new RestResponse<TestObject>
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    ResponseStatus = ResponseStatus.Completed
+                });
+
+                var request = new ApiRequest("resource")
+                {
+                    HttpMethod = HttpMethods.Post
+                };
+                
+                // Act
+                await _sut.Patch<TestObject>(request, CancellationToken.None);
+                
+                // Assert
+                _restClientMock.Verify(client => client.ExecuteTaskAsync<TestObject>(It.Is<IRestRequest>(req => req.Method == Method.PATCH), It.IsAny<CancellationToken>()), Times.Once);
+            }
+            
+            [Fact]
+            public async Task Should_Make_Request_Using_POST_Verb_Ignoring_Given_Verb_Accessing_Generic_Client()
+            {
+                // Arrange
+                _restClientMock.Setup(client => client.ExecuteTaskAsync<TestObject>(It.IsAny<IRestRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(new RestResponse<TestObject>
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    ResponseStatus = ResponseStatus.Completed
+                });
+
+                var request = new ApiRequest("resource")
+                {
+                    HttpMethod = HttpMethods.Get
+                };
+                
+                // Act
+                await _sut.Post<TestObject>(request, CancellationToken.None);
+                
+                // Assert
+                _restClientMock.Verify(client => client.ExecuteTaskAsync<TestObject>(It.Is<IRestRequest>(req => req.Method == Method.POST), It.IsAny<CancellationToken>()), Times.Once);
+            }
+
+            [Fact]
+            public async Task Should_Make_Request_Using_PUT_Verb_Ignoring_Given_Verb_Accessing_Generic_Client()
+            {
+                // Arrange
+                _restClientMock.Setup(client => client.ExecuteTaskAsync<TestObject>(It.IsAny<IRestRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(new RestResponse<TestObject>
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    ResponseStatus = ResponseStatus.Completed
+                });
+
+                var request = new ApiRequest("resource")
+                {
+                    HttpMethod = HttpMethods.Get
+                };
+                
+                // Act
+                await _sut.Put<TestObject>(request, CancellationToken.None);
+                
+                // Assert
+                _restClientMock.Verify(client => client.ExecuteTaskAsync<TestObject>(It.Is<IRestRequest>(req => req.Method == Method.PUT), It.IsAny<CancellationToken>()), Times.Once);
+            }
     }
 }
