@@ -83,6 +83,36 @@ namespace LightestNight.System.Api
             }
         }
 
+        public Task<ApiResponse> Get(ApiRequest request, CancellationToken cancellationToken = default)
+        {
+            request.HttpMethod = HttpMethods.Get;
+            return MakeApiRequest(request, cancellationToken);
+        }
+        
+        public Task<ApiResponse> Post(ApiRequest request, CancellationToken cancellationToken = default)
+        {
+            request.HttpMethod = HttpMethods.Post;
+            return MakeApiRequest(request, cancellationToken);
+        }
+        
+        public Task<ApiResponse> Patch(ApiRequest request, CancellationToken cancellationToken = default)
+        {
+            request.HttpMethod = HttpMethods.Patch;
+            return MakeApiRequest(request, cancellationToken);
+        }
+        
+        public Task<ApiResponse> Put(ApiRequest request, CancellationToken cancellationToken = default)
+        {
+            request.HttpMethod = HttpMethods.Put;
+            return MakeApiRequest(request, cancellationToken);
+        }
+        
+        public Task<ApiResponse> Delete(ApiRequest request, CancellationToken cancellationToken = default)
+        {
+            request.HttpMethod = HttpMethods.Delete;
+            return MakeApiRequest(request, cancellationToken);
+        }
+
         /// <inheritdoc cref="IApiClient.MakeApiRequest{T}" />
         public async Task<ApiResponse<T>> MakeApiRequest<T>(ApiRequest request, CancellationToken cancellationToken = default)
             where T : class
@@ -113,6 +143,34 @@ namespace LightestNight.System.Api
                 default:
                     throw new RestException(_restClient.BuildUri(restRequest).ToString(), restResponse.StatusCode, restResponse.Content, request.Body);
             }
+        }
+        
+        public Task<ApiResponse<T>> Get<T>(ApiRequest request, CancellationToken cancellationToken = default)
+            where T : class
+        {
+            request.HttpMethod = HttpMethods.Get;
+            return MakeApiRequest<T>(request, cancellationToken);
+        }
+        
+        public Task<ApiResponse<T>> Post<T>(ApiRequest request, CancellationToken cancellationToken = default)
+            where T : class
+        {
+            request.HttpMethod = HttpMethods.Post;
+            return MakeApiRequest<T>(request, cancellationToken);
+        }
+        
+        public Task<ApiResponse<T>> Patch<T>(ApiRequest request, CancellationToken cancellationToken = default)
+            where T : class
+        {
+            request.HttpMethod = HttpMethods.Patch;
+            return MakeApiRequest<T>(request, cancellationToken);
+        }
+        
+        public Task<ApiResponse<T>> Put<T>(ApiRequest request, CancellationToken cancellationToken = default)
+            where T : class
+        {
+            request.HttpMethod = HttpMethods.Put;
+            return MakeApiRequest<T>(request, cancellationToken);
         }
 
         private IRestRequest PrepareRequest(ApiRequest request)

@@ -16,7 +16,7 @@ namespace LightestNight.System.Api
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
             {
                 Formatting = Formatting.Indented,
-                TypeNameHandling = TypeNameHandling.Auto,
+                TypeNameHandling = TypeNameHandling.None,
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
             SupportedContentTypes = new[] {"application/json"};

@@ -107,7 +107,9 @@ namespace LightestNight.System.Api
                 if (!string.IsNullOrEmpty(Edge))
                     uri += $"/{Edge.TrimStart('/')}";
 
-                return uri;
+                return uri.EndsWith("/")
+                    ? uri
+                    : uri += "/";
             }
         }
         

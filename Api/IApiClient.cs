@@ -24,7 +24,6 @@ namespace LightestNight.System.Api
         /// </summary>
         /// <param name="request">The <see cref="ApiRequest" /> containing the metadata of this request</param>
         /// <param name="cancellationToken">Any <see cref="CancellationToken" /> to use during the request</param>
-        /// <returns></returns>
         Task<ApiResponse> MakeApiRequest(ApiRequest request, CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -33,8 +32,87 @@ namespace LightestNight.System.Api
         /// <param name="request">The <see cref="ApiRequest" /> containing the metadata of this request</param>
         /// <param name="cancellationToken">Any <see cref="CancellationToken" /> to use during the request</param>
         /// <typeparam name="T">The type of the object to return</typeparam>
-        /// <returns></returns>
         Task<ApiResponse<T>> MakeApiRequest<T>(ApiRequest request, CancellationToken cancellationToken = default)
+            where T : class;
+
+        /// <summary>
+        /// Makes an API request using the POST Http Method
+        /// </summary>
+        /// <param name="request">The <see cref="ApiRequest" /> containing the metadata of this request</param>
+        /// <param name="cancellationToken">Any <see cref="CancellationToken" /> to use during the request</param>
+        /// <remarks>Any Http Method set in the <see cref="ApiRequest" /> will be ignored in favour of POST</remarks>
+        Task<ApiResponse> Post(ApiRequest request, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Makes an API request using the POST Http Method
+        /// </summary>
+        /// <param name="request">The <see cref="ApiRequest" /> containing the metadata of this request</param>
+        /// <param name="cancellationToken">Any <see cref="CancellationToken" /> to use during the request</param>
+        /// <remarks>Any Http Method set in the <see cref="ApiRequest" /> will be ignored in favour of POST</remarks>
+        /// <typeparam name="T">The type of the object to return</typeparam>
+        Task<ApiResponse<T>> Post<T>(ApiRequest request, CancellationToken cancellationToken = default)
+            where T : class;
+        
+        /// <summary>
+        /// Makes an API request using the PUT Http Method
+        /// </summary>
+        /// <param name="request">The <see cref="ApiRequest" /> containing the metadata of this request</param>
+        /// <param name="cancellationToken">Any <see cref="CancellationToken" /> to use during the request</param>
+        /// <remarks>Any Http Method set in the <see cref="ApiRequest" /> will be ignored in favour of PUT</remarks>
+        Task<ApiResponse> Put(ApiRequest request, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Makes an API request using the PUT Http Method
+        /// </summary>
+        /// <param name="request">The <see cref="ApiRequest" /> containing the metadata of this request</param>
+        /// <param name="cancellationToken">Any <see cref="CancellationToken" /> to use during the request</param>
+        /// <remarks>Any Http Method set in the <see cref="ApiRequest" /> will be ignored in favour of PUT</remarks>
+        /// <typeparam name="T">The type of the object to return</typeparam>
+        Task<ApiResponse<T>> Put<T>(ApiRequest request, CancellationToken cancellationToken = default)
+            where T : class;
+        
+        /// <summary>
+        /// Makes an API request using the PATCH Http Method
+        /// </summary>
+        /// <param name="request">The <see cref="ApiRequest" /> containing the metadata of this request</param>
+        /// <param name="cancellationToken">Any <see cref="CancellationToken" /> to use during the request</param>
+        /// <remarks>Any Http Method set in the <see cref="ApiRequest" /> will be ignored in favour of PATCH</remarks>
+        Task<ApiResponse> Patch(ApiRequest request, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Makes an API request using the PATCH Http Method
+        /// </summary>
+        /// <param name="request">The <see cref="ApiRequest" /> containing the metadata of this request</param>
+        /// <param name="cancellationToken">Any <see cref="CancellationToken" /> to use during the request</param>
+        /// <remarks>Any Http Method set in the <see cref="ApiRequest" /> will be ignored in favour of PATCH</remarks>
+        /// <typeparam name="T">The type of the object to return</typeparam>
+        Task<ApiResponse<T>> Patch<T>(ApiRequest request, CancellationToken cancellationToken = default)
+            where T : class;
+        
+        /// <summary>
+        /// Makes an API request using the DELETE Http Method
+        /// </summary>
+        /// <param name="request">The <see cref="ApiRequest" /> containing the metadata of this request</param>
+        /// <param name="cancellationToken">Any <see cref="CancellationToken" /> to use during the request</param>
+        /// <remarks>Any Http Method set in the <see cref="ApiRequest" /> will be ignored in favour of DELETE</remarks>
+        Task<ApiResponse> Delete(ApiRequest request, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Makes an API request using the GET Http Method
+        /// </summary>
+        /// <param name="request">The <see cref="ApiRequest" /> containing the metadata of this request</param>
+        /// <param name="cancellationToken">Any <see cref="CancellationToken" /> to use during the request</param>
+        /// <remarks>Any Http Method set in the <see cref="ApiRequest" /> will be ignored in favour of GET</remarks>
+        Task<ApiResponse> Get(ApiRequest request, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Makes an API request using the GET Http Method
+        /// </summary>
+        /// <param name="request">The <see cref="ApiRequest" /> containing the metadata of this request</param>
+        /// <param name="cancellationToken">Any <see cref="CancellationToken" /> to use during the request</param>
+        /// <remarks>Any Http Method set in the <see cref="ApiRequest" /> will be ignored in favour of GET</remarks>
+        /// <typeparam name="T">The type of the object to return</typeparam>
+        Task<ApiResponse<T>> Get<T>(ApiRequest request, CancellationToken cancellationToken = default)
             where T : class;
     }
 }
