@@ -156,7 +156,7 @@ namespace LightestNight.System.Api.Tests
             
             // Assert
             exception.Message.ShouldContain(request.Resource);
-            exception.Details.ShouldNotBeNull();
+            exception.Meta.ShouldNotBeNull();
         }
         
         [Fact]

@@ -108,7 +108,7 @@ namespace LightestNight.System.Api
             if (restResponse.StatusCode == HttpStatusCode.Unauthorized)
                 throw new UnauthorizedException();
 
-            throw new RestException(_restClient.BuildUri(restRequest).ToString(), restResponse.Content);
+            throw new RestException(_restClient.BuildUri(restRequest).ToString(), restResponse.StatusCode, restResponse.Content, request.Body);
         }
 
         private IRestRequest PrepareRequest(ApiRequest request)
