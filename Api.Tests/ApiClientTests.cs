@@ -142,6 +142,7 @@ namespace LightestNight.System.Api.Tests
                 ResponseStatus = ResponseStatus.Error,
                 Content = JsonConvert.SerializeObject(new { Foo = "Bar" })
             });
+            _restClientMock.Setup(client => client.BuildUri(It.IsAny<IRestRequest>())).Returns(new Uri("https://localhost/resource"));
             
             var token = $"{Guid.NewGuid()}";
             var request = new ApiRequest("/resource")

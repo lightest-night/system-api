@@ -23,5 +23,10 @@ namespace LightestNight.System.Api
         /// A unique error code to distinguish from other exceptions
         /// </summary>
         public string ErrorCode { get; set; }
+        
+        /// <summary>
+        /// The full Uniform Resource Identifier that was used when making the REST request
+        /// </summary>
+        public string FullUri { get; set; }
     }
 }

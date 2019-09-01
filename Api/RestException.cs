@@ -10,21 +10,25 @@ namespace LightestNight.System.Api
         /// <summary>
         /// Creates a new instance of <see cref="RestException" /> with the given message and details
         /// </summary>
-        /// <param name="resource">The REST resource this exception pertains to</param>
+        /// <param name="fullUri">The full request URI this exception pertains to</param>
         /// <param name="details">The Exception Details</param>
-        public RestException(string resource, RestExceptionDetails details) : base($"An error occurred when sending a request to the '{resource}' resource. See details for more information")
+        public RestException(string fullUri, RestExceptionDetails details) 
+            : base($"An error occurred when sending a request to '{fullUri}'. See details for more information")
         {
             Details = details;
+            Details.FullUri = fullUri;
         }
 
         /// <summary>
         /// Creates a new instance of <see cref="RestException" /> with the given message and details
         /// </summary>
-        /// <param name="resource">The REST resource this exception pertains to</param>
+        /// <param name="fullUri">The full request URI this exception pertains to</param>
         /// <param name="details">The Exception Details</param>
-        public RestException(string resource, string details) : base($"An error occurred when sending a request to the '{resource}' resource. See details for more information")
+        public RestException(string fullUri, string details) 
+            : base($"An error occurred when sending a request to '{fullUri}'. See details for more information")
         {
             Details = JsonConvert.DeserializeObject<RestExceptionDetails>(details);
+            Details.FullUri = fullUri;
         }
     }
 }
