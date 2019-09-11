@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace LightestNight.System.Api.Extends
 {
-    public static class ServiceCollection
+    public static class ExtendsServiceCollection
     {
         public static IServiceCollection AddApiClientFactory(this IServiceCollection services)
         {
