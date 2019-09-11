@@ -85,5 +85,15 @@ namespace LightestNight.System.Api.Tests
             // Assert
             exception.Message.ShouldBe($"{baseUrl} is not a valid Absolute URI");
         }
+
+        [Fact]
+        public void Should_Create_Instance_Of_Core_Client()
+        {
+            // Act
+            var result = _sut.Create();
+            
+            // Assert
+            result.ShouldBeOfType<CoreClient>();
+        }
     }
 }

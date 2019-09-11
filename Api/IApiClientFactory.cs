@@ -3,6 +3,13 @@ namespace LightestNight.System.Api
     public interface IApiClientFactory
     {
         /// <summary>
+        /// Creates a new <see cref="IApiClient" /> of the type <see cref="CoreClient" />
+        /// </summary>
+        /// <param name="baseUrl">Any base URL to set in the client</param>
+        /// <returns>A new instance of <see cref="IApiClient" /></returns>
+        IApiClient Create(string baseUrl = default);
+            
+        /// <summary>
         /// Creates a new <see cref="IApiClient" /> of the type specified
         /// </summary>
         /// <param name="baseUrl">Any base URL to set in the client</param>

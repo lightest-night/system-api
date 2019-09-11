@@ -12,7 +12,7 @@ Gives the ability to make Authorized API Requests using a Rest Client. Utilizes 
   * Register an instance of `ApiClientFactory` as the `IApiClientFactory` type as a Singleton
 
 ##### Usage
-Generate a new instance of an Api Client using the `IApiClientFactory.Create<TClient>(string baseUrl = default)` method.
+Generate a new instance of an Api Client using the `IApiClientFactory.Create<TClient>(string baseUrl = default)` method. (For ease, if wanting the `CoreClient` just call `IApiClientFactory.Create(string baseUrl)`)
 
 The `CoreClient` is provided to give out of the box API Request functionality. If more bespoke clients are required, use one from the following:
 

@@ -4,6 +4,9 @@ namespace LightestNight.System.Api
 {
     public class ApiClientFactory : IApiClientFactory
     {
+        public IApiClient Create(string baseUrl = default)
+            => Create<CoreClient>(baseUrl);
+        
         public IApiClient Create<TClient>(string baseUrl = default)
             where TClient : ApiClient, IApiClient, new()
         {
