@@ -1,11 +1,28 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using RestSharp;
 
 namespace LightestNight.System.Api
 {
     public interface IApiClient
     {
+        /// <summary>
+        /// Updates the Serializer used within the client
+        /// </summary>
+        /// <param name="settings">Any <see cref="JsonSerializerSettings" /> to set</param>
+        /// <param name="dataFormat">The <see cref="DataFormat" /> to use</param>
+        /// <param name="supportedContentTypes">The Supported Content Types</param>
+        /// <returns>The instance of the <see cref="IApiClient" /> but with the serializer settings set</returns>
+        IApiClient SetSerializerSettings(Action<JsonSerializerSettings> settings, DataFormat dataFormat = DataFormat.Json, params string[] supportedContentTypes);
+
+        /// <summary>
+        /// Resets the Serializer used with the client to the default
+        /// </summary>
+        /// <returns>The instance of the <see cref="IApiClient" /> but with the serializer settings reset to the defaults</returns>
+        IApiClient ResetSerializer();
+        
         /// <summary>
         /// Sets the base Uri for the Rest Client
         /// </summary>

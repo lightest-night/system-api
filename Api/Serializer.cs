@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using RestSharp;
@@ -11,16 +13,21 @@ namespace LightestNight.System.Api
         public string[] SupportedContentTypes { get; }
         public DataFormat DataFormat { get; }
 
-        public Serializer()
+        public Serializer(Action<JsonSerializerSettings> settingsAction = null, DataFormat dataFormat = DataFormat.Json, params string[] supportedContentTypes)
         {
-            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            var settings = new JsonSerializerSettings
             {
                 Formatting = Formatting.Indented,
                 TypeNameHandling = TypeNameHandling.None,
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
-            SupportedContentTypes = new[] {"application/json"};
-            DataFormat = DataFormat.Json;
+            
+            settingsAction?.Invoke(settings);
+
+            DataFormat = dataFormat;
+            SupportedContentTypes = supportedContentTypes;
+            if (!SupportedContentTypes.Contains("application/json"))
+                SupportedContentTypes = SupportedContentTypes.Union(new[] {"application/json"}).ToArray();
         }
 
         public string Serialize(object obj)

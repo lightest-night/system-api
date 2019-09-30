@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Net.Http.Headers;
+using Newtonsoft.Json;
 using RestSharp;
 
 namespace LightestNight.System.Api
@@ -44,6 +45,20 @@ namespace LightestNight.System.Api
                 throw new UriFormatException(baseUrl);
 
             SetBaseUri(uri);
+        }
+
+        /// <inheritdoc cref="IApiClient.SetSerializerSettings" />
+        public IApiClient SetSerializerSettings(Action<JsonSerializerSettings> settings, DataFormat dataFormat = DataFormat.Json, params string[] supportedContentTypes)
+        {
+            _restClient.UseSerializer(new Serializer(settings, dataFormat, supportedContentTypes));
+            return this;
+        }
+
+        /// <inheritdoc cref="IApiClient.ResetSerializer" />
+        public IApiClient ResetSerializer()
+        {
+            _restClient.UseSerializer(new Serializer());
+            return this;
         }
 
         /// <inheritdoc cref="IApiClient.SetBaseUri" />
